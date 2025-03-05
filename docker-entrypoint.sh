@@ -8,11 +8,13 @@ create_env_file() {
         : ${USERNAME:=""}
         : ${PASSWORD:=""}
         : ${CHECK_INTERVAL:=300}
+        : ${TARIFF_ID:=""}
 
         echo "SERVICE=\"$SERVICE\"" > .env
         echo "USERNAME=\"$USERNAME\"" >> .env
         echo "PASSWORD=\"$PASSWORD\"" >> .env
         echo "CHECK_INTERVAL=$CHECK_INTERVAL" >> .env
+        echo "TARIFF_ID=\"$TARIFF_ID\"" >> .env
     fi
 }
 

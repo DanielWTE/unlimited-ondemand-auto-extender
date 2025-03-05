@@ -13,6 +13,7 @@ SERVICE = os.getenv("SERVICE")
 USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
 CHECK_INTERVAL = int(os.getenv("CHECK_INTERVAL"))
+TARIFF_ID = os.getenv("TARIFF_ID", "")
 
 logging.basicConfig(
     level=logging.INFO,
@@ -46,7 +47,7 @@ def main():
                 logging.info(f"Warte {CHECK_INTERVAL} Sekunden bis zur nächsten Überprüfung...")
                 time.sleep(CHECK_INTERVAL)
         elif SERVICE == "1und1":
-            check_1und1(USERNAME, PASSWORD, CHECK_INTERVAL)
+            check_1und1(USERNAME, PASSWORD, CHECK_INTERVAL, TARIFF_ID)
         else:
             logging.error(f"Unbekannte Service-ID: {SERVICE}")
     except Exception as e:

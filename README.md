@@ -9,6 +9,7 @@ Dieses Tool automatisiert das Nachbuchen von Datenvolumen bei SIM24- und 1&1-Unl
 - Automatisches Nachbuchen bei Bedarf
 - Ausführliche Logging-Funktionen
 - Dockerisierte Lösung für einfache Installation
+- Unterstützung für mehrere Tarife bei 1&1 (Auswahl eines spezifischen Tarifs möglich)
 
 ## Voraussetzungen
 
@@ -40,6 +41,41 @@ docker run -d \
 - `PASSWORD`: Das Passwort für das entsprechende Portal
 - `CHECK_INTERVAL`: Prüfintervall in Sekunden (Standard: 300)
 - `SERVICE`: Der zu überwachende Service (Standard: sim24, Optionen: sim24, 1und1)
+- `TARIFF_ID`: (Optional) Die ID eines spezifischen Tarifs bei 1&1, wenn mehrere Tarife vorhanden sind
+
+### Mehrere Tarife bei 1&1
+
+Wenn Sie mehrere Tarife in Ihrem 1&1-Konto haben, können Sie einen spezifischen Tarif für die automatische Nachbuchung auswählen:
+
+1. Starten Sie den Container zunächst ohne TARIFF_ID, um alle verfügbaren Tarife zu sehen:
+```bash
+docker run -d \
+  -e USERNAME="service-username" \
+  -e PASSWORD="service-password" \
+  -e SERVICE="1und1" \
+  -e CHECK_INTERVAL=300 \
+  --name unlimited-ondemand-auto-extender \
+  ghcr.io/danielwte/unlimited-ondemand-auto-extender:latest
+```
+
+2. Prüfen Sie die Logs, um die Tarif-IDs zu sehen:
+```bash
+docker logs unlimited-ondemand-auto-extender
+```
+
+3. Starten Sie den Container neu mit der gewünschten TARIFF_ID:
+```bash
+docker stop unlimited-ondemand-auto-extender
+docker rm unlimited-ondemand-auto-extender
+docker run -d \
+  -e USERNAME="service-username" \
+  -e PASSWORD="service-password" \
+  -e SERVICE="1und1" \
+  -e CHECK_INTERVAL=300 \
+  -e TARIFF_ID="IHRE_TARIF_ID" \
+  --name unlimited-ondemand-auto-extender \
+  ghcr.io/danielwte/unlimited-ondemand-auto-extender:latest
+```
 
 ## Logs einsehen
 
