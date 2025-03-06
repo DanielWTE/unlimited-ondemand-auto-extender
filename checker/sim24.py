@@ -28,13 +28,24 @@ def check_sim24(username, password):
             logging.info("Suche nach Button...")
             try:
                 button = page.wait_for_selector('#ButtonBuchen-ChangeServiceType-showGprsDataUsage-0V5I3', timeout=10000)
-                stats = page.wait_for_selector('.dataUsageBar-info-numbers', timeout=10000)
                 
-                if stats:
-                    used_data = stats.query_selector('.font-weight-bold').inner_text()
-                    total_data = stats.query_selector('.l-txt-small').inner_text().replace('von', '').strip()
-                    logging.info(f"Verbrauchte Daten: {used_data} von {total_data}")
-                    take_screenshot(page, "usage_page", "sim24")
+                data_usage_bar = page.wait_for_selector('.dataUsageBar-info', timeout=10000)
+                
+                if data_usage_bar:
+                    data_numbers = page.query_selector_all('.dataUsageBar-info-numbers')
+                    if len(data_numbers) >= 2:
+                        used_data_element = data_numbers[0].query_selector('.font-weight-bold')
+                        total_data_element = data_numbers[1].query_selector('.l-txt-small')
+                        
+                        if used_data_element and total_data_element:
+                            used_data = used_data_element.inner_text()
+                            total_data = total_data_element.inner_text().replace('von', '').strip()
+                            logging.info(f"Verbrauchte Daten: {used_data} von {total_data}")
+                            take_screenshot(page, "usage_page", "sim24")
+                        else:
+                            logging.warning("Konnte Datenverbrauch-Elemente nicht finden")
+                    else:
+                        logging.warning("Nicht genügend dataUsageBar-info-numbers Elemente gefunden")
                 
                 if button:
                     is_disabled = button.get_attribute('disabled') is not None
