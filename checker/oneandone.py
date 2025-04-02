@@ -21,6 +21,17 @@ def check_1und1(username, password, CHECK_INTERVAL, tariff_id=""):
             page.fill('#login-form-password', password)
             page.click('#login-button')
             
+            try:
+                error_box = page.locator('.text-box-access-error').first
+                if error_box:
+                    error_text = error_box.text_content()
+                    logging.error(f"Login fehlgeschlagen: {error_text.strip()}")
+                    if browser:
+                        browser.close()
+                    return
+            except Exception as e:
+                logging.info("Kein sofortiger Login-Fehler erkannt.")
+                
             logging.info("Warte auf Roboter-Verifizierung...")
             try:
                 robot_button = page.wait_for_selector('button.button-primary.button-access:has-text("E-Mail senden")', timeout=5000)
